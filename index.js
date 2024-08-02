@@ -77,7 +77,7 @@ const requestLogger = (request, response, next) => {
     Person.findByIdAndUpdate(
         request.params.id,
         { name, number },
-        { new: true }
+        { new: true, runValidators: true, context: 'query' }
       )
         .then(updatedPerson => {
             response.json(updatedPerson)
