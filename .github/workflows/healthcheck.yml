@@ -1,0 +1,31 @@
+name: URL Health Check
+
+on:
+    push:
+      branches:
+        - main  
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://fullstack-osa3-c2ha.onrender.com/
+          follow-redirect: false
+          max-attempts: 3
+          retry-delay: 5s
+          retry-all: false
+      - name: Notify on success
+        if: success()
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: Health check SUCCESSFUL for https://fullstack-osa3-c2ha.onrender.com/
+      - name: Notify on failure
+        if: failure()
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: Health check FAILED for https://fullstack-osa3-c2ha.onrender.com/
